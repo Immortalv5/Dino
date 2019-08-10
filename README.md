@@ -10,7 +10,7 @@ The required modules are
 
 The modules can be installed using the command  
   
-`pip install numpy pyUserInput pyscreenshot`  
+`pip install numpy pyUserInput pyscreenshot pillow`  
   
 or by executing the requirement.txt  
   
