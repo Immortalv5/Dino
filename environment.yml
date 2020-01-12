@@ -13,6 +13,7 @@ dependencies:
   - pillow=7.0.0=py38hcc1f983_0
   - pip=19.3.1=py38_0
   - python=3.8.1=h5fd99cc_1
+  - pywin32=227=py38he774522_0
   - setuptools=44.0.0=py38_0
   - sqlite=3.30.1=he774522_0
   - tk=8.6.8=hfa6e2cd_0
@@ -27,6 +28,5 @@ dependencies:
     - easyprocess==0.2.8
     - numpy==1.18.1
     - pyscreenshot==0.6
-    - pywin32==227
 prefix: C:\Users\Amars\Anaconda3\envs\dino
 
