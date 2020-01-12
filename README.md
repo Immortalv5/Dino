@@ -5,6 +5,7 @@ The game uses multiple neural networks specifically for each genome to get high 
 ## Prerequisites
 The required modules are
 - numpy
+- pillow
 - pyUserInput
 - pyscreenshot
 
@@ -16,7 +17,9 @@ or by executing the requirement.txt
   
 `pip install -r requirement.txt`  
 
-Due to some issues for installing pykeyboard, the module has to be installed manually by running `python setup.py` in pykeyboard.
+For creating an environment in anaconda, the command `conda env create -f environment.yml` should be executed in the anaconda prompt where environment.yml is the environment file.
+
+If there are any issues in installing pykeyboard, the module can be installed manually by running `python setup.py install` in command line after going into the directory `./Manual/PyUserInput`. This problem may be caused by pyHook as it is not available for newer versions of python.
 
 ## Modules  
 The System Modules consists of three main parts. They are:  
