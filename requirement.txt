@@ -1,4 +1,4 @@
 numpy
-pyuserinput
 pyscreenshot
-pillow
+selenium
+keyboard

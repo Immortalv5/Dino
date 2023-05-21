@@ -1,8 +1,12 @@
 #from PIL import Image
 from datetime import datetime
-#import pyautogui
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+# https://github.com/boppreh/keyboard
+import keyboard
 import pyscreenshot as ImageGrab
-#import win32gui
 
 dino_color = (83, 83, 83)
 
@@ -26,32 +30,28 @@ class Scanner:
         self.__current_fitness = 0
         self.__change_fitness = False
 
-    def find_game(self):
-        image = screenshot(0, 0, 1500, 1500)
-        size = image.size
-        pixels = []
-        for y in range(0, size[1], 10):
-            for x in range(0, size[0], 10):
-                color = image.getpixel((x, y))
-                if is_dino_color(color):
-                    pixels.append((x, y))
-        if not pixels:
-            raise Exception("Game not found!")
-        self.__find_dino(pixels)
+    def locate_game(self):
+        
+        browser = webdriver.Firefox()
+        browser.fullscreen_window()
+        # browser.maximize_window()
+        browser.get("https://trex-runner.com")
 
-    def __find_dino(self, pixels):
-        start = pixels[0]
-        end = pixels[1]
-        for pixel in pixels:
-            if pixel[0] < start[0] and pixel[1] > start[1]:
-                start = pixel
-            if pixel[0] > end[0] and pixel[1] > end[1]:
-                end = pixel
-        self.dino_start = start
-        self.dino_end = end
+        element = browser.find_element(By.ID, "main-frame-error")
+        game_location = element.location
+
+        game_location['w'] = game_location['x'] + 600
+        game_location['h'] = game_location['y'] + 150
+
+        self.game_location = list(game_location.values())
+
+        # self.dino_start = (game_location['x'], game_location['y'])
+        # self.dino_end = (game_location['w'], game_location['h'])
         
     def find_next_obstacle(self):
-        image = screenshot(175, 200, 575, 290)
+        
+        image = ImageGrab.grab(*self.game_location)
+        
         dist_2 = self.__next_obstacle_dist(image)
         if dist_2 < 45 and not self.__change_fitness:
             self.__current_fitness += 1
