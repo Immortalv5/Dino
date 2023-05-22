@@ -17,7 +17,7 @@ def screenshot(x, y, w, h):
     return im
   
 def is_dino_color(pixel):
-    return pixel == dino_color
+    return pixel == (83, 83, 83)
 
 def obstacle(distance, length, speed, time):
     return { 'distance': distance, 'length': length, 'speed': speed, 'time': time }
@@ -30,7 +30,7 @@ class Scanner:
         self.__current_fitness = 0
         self.__change_fitness = False
 
-    def locate_game(self):
+    def locate_game(self, game_width = 600, game_height = 150, ground_size = 40):
         
         browser = webdriver.Firefox()
         browser.fullscreen_window()
@@ -40,24 +40,37 @@ class Scanner:
         element = browser.find_element(By.ID, "main-frame-error")
         game_location = element.location
 
-        game_location['w'] = game_location['x'] + 600
-        game_location['h'] = game_location['y'] + 150
+        game_location['w'] = game_location['x'] + game_width
+        game_location['h'] = game_location['y'] + game_height - ground_size
 
         self.game_location = list(game_location.values())
 
         # self.dino_start = (game_location['x'], game_location['y'])
         # self.dino_end = (game_location['w'], game_location['h'])
+
+    def set_view(self, view = 'front'):
         
-    def find_next_obstacle(self):
+        if view == 'front':
+            box = self.game_location.copy()
+
+            # Front View Setting
+            box['x'] += 42
+            box['y'] += 42 * 2
+            box['h'] -= 36
+
+            return list(box.values())
+
+    def find_next_obstacle(self, dino_size = 41):
         
-        image = ImageGrab.grab(*self.game_location)
-        
+        bbox = self.set_view()
+        image = ImageGrab.grab(bbox)
+
         dist_2 = self.__next_obstacle_dist(image)
-        if dist_2 < 45 and not self.__change_fitness:
-            self.__current_fitness += 1
-            self.__change_fitness = True
-        elif dist_2 > 45:
-            self.__change_fitness = False
+        # if dist_2 < 45 and not self.__change_fitness:
+        #     self.__current_fitness += 1
+        #     self.__change_fitness = True
+        # elif dist_2 > 45:
+        #     self.__change_fitness = False
         time = datetime.now()
         delta_dist = 0
         speed = 0
@@ -70,13 +83,13 @@ class Scanner:
     def __next_obstacle_dist(self, image):
         s = 0
         size = image.size
-        for y in range(0, size[1], 5):
-            for x in range(0, size[0], 5):
-                color = image.getpixel((x, y))
-                if is_dino_color(color):
-                    s += 1
-        if s > 50:
-            raise Exception('Game over!')
+        # for y in range(0, size[1], 5):
+        #     for x in range(0, size[0], 5):
+        #         color = image.getpixel((x, y))
+        #         if is_dino_color(color):
+        #             s += 1
+        # if s > 50:
+        #     raise Exception('Game over!')
 
         for x in range(0, size[0], 5):
             for y in range(0, size[1], 5):

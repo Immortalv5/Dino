@@ -2,3 +2,4 @@ numpy
 pyscreenshot
 selenium
 keyboard
+scikit-image
