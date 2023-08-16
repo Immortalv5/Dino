@@ -1,4 +1,6 @@
 *.png*
+*.npy
+*.ipynb
 __pycache__
 geckodriver.log
 dev.py

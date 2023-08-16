@@ -6,21 +6,27 @@ import numpy as np
 
 # https://github.com/boppreh/keyboard
 import keyboard
+from selenium import webdriver
 
 import random
 import copy
 
 class Generation:
     def __init__(self):
-        self.__genomes = [Network() for i in range(1)]
+        self.__genomes = [Network() for i in range(3)]
         self.__best_genomes = []
+
+        self.browser = webdriver.Firefox()
+        self.browser.fullscreen_window()
+        # browser.maximize_window()
+        self.browser.get("https://trex-runner.com")
 
     def execute(self):
 
         scanner = Scanner()
-        scanner.locate_game()
+        scanner.locate_game(self.browser)
         
-        r = range(1,2)
+        r = range(1,4)
         
         for num, genome in zip(r, self.__genomes):
             
@@ -32,17 +38,16 @@ class Generation:
             keyboard.press_and_release('space')
             
             while True:
-                try:
-                    obs = scanner.find_next_obstacle()
-                    inputs = [obs['distance'] / 1000, obs['length'], obs['speed']/10]
-                    print(inputs)
-                    outputs = genome.forward(np.array(inputs, dtype=float))
-                    print(outputs)
-                    if outputs[0] > 0.5:
-                        keyboard.press_and_release('space')
-                    print('continue')
-                except:
-                    break
+
+                obs = scanner.find_next_obstacle()
+                print(obs)
+                inputs = [obs['distance'] / 600, obs['length'], obs['speed']/10]
+                outputs = genome.forward(np.array(inputs, dtype=float))
+                print(outputs)
+                if outputs[0] > 0.5:
+                    keyboard.press_and_release('space')
+                sleep(0.1)
+
             print("Improved")
             genome.fitness = scanner.get_fitness()
 
@@ -51,6 +56,10 @@ class Generation:
         self.__genomes = self.__genomes[:4]
         self.__best_genomes = self.__genomes[:]
         print(self.__best_genomes)
+    
+    def save_genomes(self, generation_id):
+        for genome_id, genome in enumerate(self.__best_genomes, 1):
+            genome.save(generation_id, genome_id)
 
     def mutations(self):
         while len(self.__genomes) < 10:
